@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 import re
 
 def validate_xml(filename):
@@ -27,10 +27,8 @@ def validate_xml(filename):
 
         print("XML and Content Structure validated successfully.")
         return True
-    except ET.ParseError as e:
-        print(f"XML Parse Error: {e}")
-        return False
     except Exception as e:
+        # defusedxml might raise different exceptions, catching all for validation
         print(f"Validation Error: {e}")
         return False
 
