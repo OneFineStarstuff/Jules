@@ -93,9 +93,9 @@ The following sequence diagram illustrates the EAIP-compliant handoff process be
 ```mermaid
 sequenceDiagram
     participant O as Orchestrator
-    participant A as Agent Alpha (Discovery)
+    participant A as "Agent Alpha (Discovery)"
     participant S as SPIRE/OPA
-    participant B as Agent Beta (Fulfillment)
+    participant B as "Agent Beta (Fulfillment)"
 
     O->>A: Task Execution Request (Correlation ID: XYZ)
     A->>S: Request Identity Attestation
