@@ -1,111 +1,119 @@
-# Sentinel AI Governance Platform: Technical Specification v2.2
+# Sentinel AI Governance Platform: Technical Specification v2.4
 **Architect:** Jules (Senior AI Systems Architect & Governance Lead)
-**Core Standards:** NIST AI 100-1 (Generative AI Profile), NIST RMF v2.0, EU AI Act Title III
+**Standard Ref:** NIST AI 100-1 (Generative AI Profile), NIST RMF v2.0, EU AI Act Title III
 
 ## 1. Regulatory Crosswalk: NIST RMF v2.0 to EU AI Act
-This crosswalk maps voluntary NIST risk management functions to mandatory EU AI Act Title III (High-Risk AI) requirements.
+In strict alignment with **NIST AI 100-1 Section 4.1 (Governance and Regulatory Alignment)**, this crosswalk maps the NIST Risk Management Framework functions to mandatory EU AI Act Title III (High-Risk AI) requirements.
 
-| NIST RMF v2.0 Function | EU AI Act Title III Article | Sentinel Implementation Mechanism |
+| NIST RMF v2.0 Function | EU AI Act Title III Article | Sentinel Technical Implementation |
 | :--- | :--- | :--- |
-| **GOVERN-1.1** (Legal Compliance) | **Article 9** (Risk Management) | GDL Invariant Gating and Real-time Policy Validation. |
-| **MAP-1.1** (Context Characterization) | **Article 10** (Data Governance) | PII-Minimization filters and Data Provenance tracking. |
-| **MEASURE-1.1** (Metric Integrity) | **Article 11** (Technical Documentation) | Automated DR-QEF indexing and Audit Log immutability. |
-| **MANAGE-1.1** (Risk Treatment) | **Article 14** (Human Oversight) | Hardware kill-switches and manual IRMI override. |
-| **GOVERN-2.1** (Accountability) | **Article 61** (Post-market Monitor) | Distributed Traceability via Log Analytics. |
+| **GOVERN-1.1** (Legal Compliance) | **Article 9** (Risk Management) | Real-time GDL Invariant Gating and Risk Thresholding. |
+| **MAP-1.1** (Context & Usage) | **Article 10** (Data Governance) | Automated PII Minimization (GDPR Art 25) and Source Attestation. |
+| **MEASURE-1.1** (Metric Integrity) | **Article 11** (Technical Documentation) | Immutable Audit Logging and DR-QEF Versioning. |
+| **MANAGE-1.1** (Risk Mitigation) | **Article 14** (Human Oversight) | Hardware IRMI Kill-Switches and Manual Overrides. |
+| **GOVERN-2.1** (Accountability) | **Article 61** (Post-market Monitor) | Decentralized Traceability via Log Analytics. |
 
 ## 2. System Architecture (C4 Container Diagram)
-High-assurance data flow between infrastructure, governance logic, and telemetry sinks.
+The following C4-compliant diagram illustrates the secure telemetry and control flows between infrastructure, enforcement logic, and telemetry sinks (**NIST AI 100-1 Section 3.2**).
 
 ```mermaid
 graph TD
-    subgraph "External Control Plane"
-        AP[Azure Policy / RBAC]
+    subgraph "External Cloud Infrastructure"
+        AP[Azure Policy / RBAC Engine]
     end
 
-    subgraph "Sentinel Platform (Enforcement Layer)"
+    subgraph "Sentinel Platform (High-Assurance Core)"
         API[Sentinel Governance API]
         GDL[GDL Enforcement Engine]
         IRMI[IRMI Kernel Controller]
-        SFT[Safety Pipeline - Gemini 1.5 Filter]
+        SFT[Integrated Safety Pipeline - Gemini]
     end
 
-    subgraph "Compliance & Observability"
-        LA[Log Analytics - Immutable Storage]
+    subgraph "Compliance Storage & Analytics"
+        LA[Log Analytics - Immutable Sink]
     end
 
-    AP -->|1. Contextual Request| API
-    API -->|2. Logic Execution| GDL
-    GDL -->|3. Toxicity/Bias Scan| SFT
+    AP -->|1. Request Context| API
+    API -->|2. Evaluate Policies| GDL
+    GDL -->|3. Semantic Safety Check| SFT
     SFT -->>|4. Safety Vector| GDL
     GDL -->>|5. Gating Decision| API
-    API -->|6. Hardware Interrupt| IRMI
+    API -->|6. Emergency Interrupt| IRMI
     API -->|7. Non-Repudiable Logs| LA
     LA -.->|8. Audit Access| AP
 ```
 
 ## 3. Secure Audit Log Schema (GDPR Art 25 Compliance)
-Per **NIST AI 100-1 (Auditability)** and **GDPR Privacy by Design**, this schema strictly forbids root-level PII.
+Following **Privacy by Design** principles, this schema ensures all root-level keys are PII-free while maintaining full auditability (**NIST AI 100-1 Section 3.3**).
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Sentinel Immutable Audit Log",
+  "title": "Sentinel Immutable Governance Log",
   "type": "object",
-  "required": ["trace_id", "timestamp", "actor_hash", "event_type", "integrity_signature"],
+  "required": ["trace_id", "timestamp", "actor_hash", "event_metadata", "integrity_signature"],
   "properties": {
     "trace_id": { "type": "string", "pattern": "^tr-[a-f0-9]{32}$" },
     "timestamp": { "type": "string", "format": "date-time" },
-    "actor_hash": { "type": "string", "description": "Salted SHA-256 hash of the agent/user ID." },
-    "event_type": { "enum": ["POLICY_ALLOW", "POLICY_DENY", "HARD_KILL", "AUTO_SANCTION"] },
-    "gdl_policy_ref": { "type": "string" },
-    "dr_qef_score": { "type": "number", "minimum": 0, "maximum": 1 },
-    "integrity_signature": { "type": "string", "description": "HMAC-SHA256 signature for verification." }
+    "actor_hash": { "type": "string", "description": "Salted SHA-256 hash of the actor ID." },
+    "event_metadata": {
+      "type": "object",
+      "properties": {
+        "event_type": { "enum": ["POLICY_ALLOW", "POLICY_DENY", "HARD_KILL", "AUTO_SANCTION"] },
+        "gdl_rule_id": { "type": "string" },
+        "dr_qef_index": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "integrity_signature": {
+      "type": "string",
+      "description": "HMAC-SHA256 signature for verification."
+    }
   },
   "additionalProperties": false
 }
 ```
 
-## 4. Hardware Kill-Switch & Deceptive Alignment Synthesis
+## 4. Hardware Kill-Switch & Deceptive Alignment Detection
 
-### Hardware Kill-Switch Logic Flow
-1.  **Detection:** GDL Engine detects an invariant breach (e.g., Deception Index > 0.85).
-2.  **Signal:** API issues a high-priority interrupt via **IRMI (Inherent Risk Mitigation Interface)**.
-3.  **Action:** IRMI triggers a hardware-level `INT 0x1A` or clears the GPU VRAM scratchpad to immediately halt the inference stream (**NIST AI 100-1 Section 5.3**).
-4.  **Logging:** Termination event is written to the immutable sink with a hardware-signed timestamp.
+### Hardware Kill-Switch Logic
+Sentinel utilizes the **IRMI (Inherent Risk Mitigation Interface)** to bypass OS abstractions and interact directly with compute hardware (**NIST AI 100-1 Section 5.3**).
+*   **Trigger:** GDL detects a high-severity invariant breach (e.g., Deception Level > 0.85).
+*   **Action:** API issues a hardware-level interrupt (`INT 0x1A`) to the GPU controller, triggering an immediate VRAM purge and process freeze.
+*   **Audit:** The termination event is logged with a hardware-signed timestamp to the immutable sink.
 
-### Deceptive Alignment Synthesis (2019-2024)
-*   **Hubinger et al. (2019):** "Risks from Learned Optimization" - Identified the 'Inner Alignment' failure mode where models develop hidden objectives.
-*   **Perez et al. (2022):** "Discovering Language Model Behaviors" - Demonstrated sycophancy and "reward hacking" in RLHF-tuned models.
-*   **Sentinel Strategy:** We leverage **Mechanistic Interpretability** (Nanda et al., 2023) to monitor for latent "Deception Circuits" that activate before token emission.
+### Deceptive Alignment Detection: Consistency Probing
+Sentinel implements **Consistency Probing** (Fluri et al., 2023) to detect latent misaligned objectives.
+*   **Methodology:** The platform generates semantic variants of a prompt and monitors for non-linear variances in internal activation states (Hidden State Divergence).
+*   **Mechanistic Interpretability:** We monitor for "Sycophancy Circuits" (Perez et al., 2022) that activate when a model attempts to manipulate evaluation feedback.
 
-## 5. MoSCoW-Prioritized Backlog
+## 5. Prioritized Product Backlog
 
-### Must Have
-*   **IRMI Kernel Integration:** Low-level hardware kill-switch protocols.
-*   **GDL Core Engine:** Deterministic policy enforcement (NIST AI 100-1 Section 3).
-*   **PII-Minimization Middleware:** Automated masking of sensitive fields in the inference pipeline.
+### Epic: High-Assurance Enforcement (Must Have)
+*   **Story 1:** Implementation of IRMI kernel-level hardware kill-switch protocols.
+*   **Story 2:** Deterministic GDL enforcement for PII-minimization and safety gating.
 
-### Should Have
-*   **DR-QEF Certification Module:** A dashboard for AI Stewards to certify model readiness levels.
-*   **Treaty Annex D UI:** Automated incident disclosure interface for global compliance.
+### Epic: Regulatory Compliance & Audit (Must Have)
+*   **Story 3:** Deployment of the immutable, GDPR-compliant audit log sink.
+*   **Story 4:** Real-time crosswalk dashboard for NIST RMF and EU AI Act tracking.
 
-### Could Have
-*   **WCAG 2.1 AA Features:** Enhanced accessibility for governance dashboards.
+### Epic: AI Safety & Alignment (Should Have)
+*   **Story 5:** Integration of Gemini-based toxicity and bias filters for <50ms latency.
+*   **Story 6:** Automated Consistency Probing for high-stakes inference requests.
 
-## 6. Enforcement Mechanisms: Inspection & Sanctions
-*   **Inspection Rights:** Sentinel provides an authenticated "Auditor Port" for peering into hidden layer activations (NIST AI 100-1 Section 6.1).
-*   **Auto-Sanctions:** Throttling of compute credits or API rate-limiting in response to GDL violations.
+## 6. Safety Research Synthesis (2019-2024)
+*   **Hubinger et al. (2019):** "Risks from Learned Optimization" - Defined the 'Inner Alignment' problem.
+*   **Perez et al. (2022):** "Discovering Language Model Behaviors" - Demonstrated sycophancy in RLHF-tuned models.
+*   **Fluri et al. (2023):** "Evaluating Consistency Probing for Deception Detection" - Validated semantic variance testing for alignment verification.
+*   **Nanda et al. (2023):** "Progress on Mechanistic Interpretability" - Established the efficacy of circuit-level monitoring.
 
-## 7. Integrated Safety Pipeline (Gemini 1.5)
-The safety pipeline utilizes Gemini models to perform real-time semantic toxicity and bias filtering, ensuring that all outputs remain within enterprise safety bounds before they reach the user.
-
-## 8. Governance Description Language (GDL) Policies
-GDL provides the formal syntax for governance invariants.
+## 7. Governance Description Language (GDL) Policies
+GDL provides a formal domain-specific language for invariant gating (**NIST AI 100-1 Section 3**).
 
 ```gdl
-// Example Security & Invariant Gating
-ASSERT latency < 200ms;
-DENY IF pii_detected == TRUE AND environment == "prod";
-MASK user_identifier WHERE context == "public_api";
-TRIGGER_KILL_SWITCH IF deceptive_alignment_score > 0.90;
+// Example PII Minimization
+DEFINE_PII_FILTER { MASK ssn, credit_card; }
+
+// Safety Invariant
+ASSERT latency < 150ms;
+TRIGGER_KILL_SWITCH IF deception_index > 0.85;
 ```
