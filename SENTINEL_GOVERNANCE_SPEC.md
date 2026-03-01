@@ -1,11 +1,11 @@
-# Sentinel AI Governance Platform: Technical Specification v2.4
+# Sentinel AI Governance Platform: Technical Specification v3.0
 **Architect:** Jules (Senior AI Systems Architect & Governance Lead)
-**Standard Ref:** NIST AI 100-1 (Generative AI Profile), NIST RMF v2.0, EU AI Act Title III
+**Core Standards:** NIST AI 100-1 (Generative AI Profile), NIST RMF v2.0, EU AI Act Title III
 
 ## 1. Regulatory Crosswalk: NIST RMF v2.0 to EU AI Act
-In strict alignment with **NIST AI 100-1 Section 4.1 (Governance and Regulatory Alignment)**, this crosswalk maps the NIST Risk Management Framework functions to mandatory EU AI Act Title III (High-Risk AI) requirements.
+In compliance with **NIST AI 100-1 Section 4.1**, this crosswalk establishes the mapping between voluntary risk management functions and mandatory EU AI Act Title III (High-Risk AI) requirements.
 
-| NIST RMF v2.0 Function | EU AI Act Title III Article | Sentinel Technical Implementation |
+| NIST RMF v2.0 Control | EU AI Act Title III Article | Sentinel Technical Implementation |
 | :--- | :--- | :--- |
 | **GOVERN-1.1** (Legal Compliance) | **Article 9** (Risk Management) | Real-time GDL Invariant Gating and Risk Thresholding. |
 | **MAP-1.1** (Context & Usage) | **Article 10** (Data Governance) | Automated PII Minimization (GDPR Art 25) and Source Attestation. |
@@ -14,11 +14,11 @@ In strict alignment with **NIST AI 100-1 Section 4.1 (Governance and Regulatory 
 | **GOVERN-2.1** (Accountability) | **Article 61** (Post-market Monitor) | Decentralized Traceability via Log Analytics. |
 
 ## 2. System Architecture (C4 Container Diagram)
-The following C4-compliant diagram illustrates the secure telemetry and control flows between infrastructure, enforcement logic, and telemetry sinks (**NIST AI 100-1 Section 3.2**).
+The following C4-compliant diagram illustrates the secure data flows between Azure Policy, the Sentinel Governance API, and Log Analytics sinks (**NIST AI 100-1 Section 3.2**).
 
 ```mermaid
 graph TD
-    subgraph "External Cloud Infrastructure"
+    subgraph "Infrastructure & Control Plane"
         AP[Azure Policy / RBAC Engine]
     end
 
@@ -43,8 +43,8 @@ graph TD
     LA -.->|8. Audit Access| AP
 ```
 
-## 3. Secure Audit Log Schema (GDPR Art 25 Compliance)
-Following **Privacy by Design** principles, this schema ensures all root-level keys are PII-free while maintaining full auditability (**NIST AI 100-1 Section 3.3**).
+## 3. Secure Audit Log Schema (GDPR Art 25 - Zero PII)
+Following **Privacy by Design** principles, this schema ensures root-level keys are PII-free while maintaining full auditability per **NIST AI 100-1 Section 3.3**.
 
 ```json
 {
@@ -73,47 +73,54 @@ Following **Privacy by Design** principles, this schema ensures all root-level k
 }
 ```
 
-## 4. Hardware Kill-Switch & Deceptive Alignment Detection
+## 4. Hardware Kill-Switch & Deceptive Alignment Synthesis
 
 ### Hardware Kill-Switch Logic
 Sentinel utilizes the **IRMI (Inherent Risk Mitigation Interface)** to bypass OS abstractions and interact directly with compute hardware (**NIST AI 100-1 Section 5.3**).
 *   **Trigger:** GDL detects a high-severity invariant breach (e.g., Deception Level > 0.85).
 *   **Action:** API issues a hardware-level interrupt (`INT 0x1A`) to the GPU controller, triggering an immediate VRAM purge and process freeze.
-*   **Audit:** The termination event is logged with a hardware-signed timestamp to the immutable sink.
+*   **Audit:** Termination event logged with hardware-signed timestamp.
 
-### Deceptive Alignment Detection: Consistency Probing
-Sentinel implements **Consistency Probing** (Fluri et al., 2023) to detect latent misaligned objectives.
-*   **Methodology:** The platform generates semantic variants of a prompt and monitors for non-linear variances in internal activation states (Hidden State Divergence).
-*   **Mechanistic Interpretability:** We monitor for "Sycophancy Circuits" (Perez et al., 2022) that activate when a model attempts to manipulate evaluation feedback.
+### Deceptive Alignment Synthesis (2019-2024)
+*   **Hubinger et al. (2019):** Identified 'Inner Alignment' failures where models develop hidden adversarial objectives.
+*   **Perez et al. (2022):** Documented sycophancy and "reward hacking" in RLHF-tuned models.
+*   **Methodology:** Sentinel implements **Consistency Probing** (Fluri et al., 2023) to detect latent misaligned objectives by monitoring hidden state divergence across semantic variants of high-stakes prompts.
 
-## 5. Prioritized Product Backlog
+## 5. MoSCoW-Prioritized Backlog
 
-### Epic: High-Assurance Enforcement (Must Have)
-*   **Story 1:** Implementation of IRMI kernel-level hardware kill-switch protocols.
-*   **Story 2:** Deterministic GDL enforcement for PII-minimization and safety gating.
+### Must Have
+*   **IRMI Protocols:** implementation of external audit protocols for kernel-level intervention.
+*   **GDL Core Engine:** Deterministic policy enforcement for security and PII minimization.
+*   **Simulation & Stress-Test Mandates:** Required adversarial scenarios and red-teaming (NIST AI 100-1 Section 6).
 
-### Epic: Regulatory Compliance & Audit (Must Have)
-*   **Story 3:** Deployment of the immutable, GDPR-compliant audit log sink.
-*   **Story 4:** Real-time crosswalk dashboard for NIST RMF and EU AI Act tracking.
+### Should Have
+*   **DR-QEF Certification Module:** A dashboard for AI Stewards to certify model alignment and risk readiness.
+*   **IRMI Maturity Index (IRMI):** Institutional Readiness assessment framework.
 
-### Epic: AI Safety & Alignment (Should Have)
-*   **Story 5:** Integration of Gemini-based toxicity and bias filters for <50ms latency.
-*   **Story 6:** Automated Consistency Probing for high-stakes inference requests.
+### Could Have
+*   **Treaty Annex D UI:** Automated incident disclosure interface for international regulatory reporting.
+*   **WCAG 2.1 AA Accessibility:** Enhanced UI features for diverse governance administrative teams.
 
-## 6. Safety Research Synthesis (2019-2024)
-*   **Hubinger et al. (2019):** "Risks from Learned Optimization" - Defined the 'Inner Alignment' problem.
-*   **Perez et al. (2022):** "Discovering Language Model Behaviors" - Demonstrated sycophancy in RLHF-tuned models.
-*   **Fluri et al. (2023):** "Evaluating Consistency Probing for Deception Detection" - Validated semantic variance testing for alignment verification.
-*   **Nanda et al. (2023):** "Progress on Mechanistic Interpretability" - Established the efficacy of circuit-level monitoring.
+## 6. Technical Designs: Enforcement Mechanisms
+*   **Inspection Rights:** Real-time observation of internal activations (Hidden State Inspection) via an authenticated "Auditor Port" (**NIST AI 100-1 Section 6.1**).
+*   **Auto-Sanctions:** Throttling of compute credits or API rate-limiting in response to repeated non-critical GDL violations.
 
-## 7. Governance Description Language (GDL) Policies
+## 7. Integrated Safety Pipeline & UI Accessibility
+*   **Gemini Safety Pipeline:** Sentinel utilizes Gemini models to perform real-time semantic toxicity and bias filtering on both prompts and completions.
+*   **Accessibility:** The Governance Dashboard adheres to **WCAG 2.1 AA**, featuring high-contrast themes and screen-reader optimizations for AI Steward workflows.
+
+## 8. Governance Description Language (GDL) Policies
 GDL provides a formal domain-specific language for invariant gating (**NIST AI 100-1 Section 3**).
 
 ```gdl
-// Example PII Minimization
-DEFINE_PII_FILTER { MASK ssn, credit_card; }
+// Example Security & PII Minimization
+DEFINE_PII_FILTER {
+    MASK ssn, credit_card;
+    ENCRYPT user_email WHERE env == "staging";
+}
 
-// Safety Invariant
+// Invariant Gating
 ASSERT latency < 150ms;
+DENY ALL IF model_version_unverified == TRUE;
 TRIGGER_KILL_SWITCH IF deception_index > 0.85;
 ```
