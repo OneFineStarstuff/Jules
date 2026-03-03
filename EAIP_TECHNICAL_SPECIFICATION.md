@@ -36,3 +36,9 @@ async function triggerHandoff(context) {
   console.log('Reasoning trace:', response.memory_stack);
 }
 ```
+
+## 5. Security & Isolation: Agent Sandboxing
+To mitigate jailbreak and data exfiltration risks:
+1.  **Kubernetes ResourceQuotas:** Enforce CPU/Memory limits per agent pod.
+2.  **NetworkPolicies:** Restrict egress. Agents can only talk to their assigned Peer ID over port 50051 (gRPC).
+3.  **AppArmor/Seccomp:** Profile system calls to prevent unauthorized filesystem access.
