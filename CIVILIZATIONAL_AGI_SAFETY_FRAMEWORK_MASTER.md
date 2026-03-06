@@ -1,70 +1,79 @@
-# Master Civilizational AGI Safety & Governance Framework: Design Brief
+# Master Civilizational AGI Safety & Governance Framework: Operational Design Brief
+**Architect:** Jules (Principal Systems Architect)
+**Status:** Canonical Release v5.0 (Sealed under Canonical Lock)
+**Target:** Global Regulatory Bodies, Heads of State, and AGI Safety Researchers
 
-## 1. Scientific General Intelligence (SGI) Governance & Architecture
+---
+
+## Executive Summary
+This design brief establishes a multi-layered, technically precise framework for the governance of advanced STEM-focused AI (Scientific General Intelligence) and the transition to civilization-scale AGI. It integrates deterministic substrate-level controls (IRMI) with high-level constitutional invariants (Human Meaning Constitution) to ensure that the trajectory of self-improving AI remains bounded within human-aligned safety manifolds.
+
+---
+
+## Module 1: Scientific General Intelligence (SGI) Governance & Architecture
 
 ### 1.1 Architectural Invariants for STEM-focused AI
-SGI systems must adhere to **Epistemic Substantiation**. Unlike probabilistic models, SGI requires:
-*   **Symbolic Reasoning Layer:** Formal verification of mathematical derivations.
-*   **Causal Inference Engine:** Distinguishing mechanism from correlation.
-*   **Veridical Grounding:** Mandatory citation of cryptographically signed experimental nodes.
+SGI systems must adhere to the principle of **Epistemic Substantiation** to prevent the generation of hallucinated or dangerous physical derivations.
+*   **Symbolic Reasoning Layer:** Mandatory formal verification of all mathematical and physical outputs using automated theorem provers.
+*   **Causal Inference Engine:** Separation of mechanism from statistical correlation to ensure experimental safety.
+*   **Veridical Grounding:** Every substantive assertion must be anchored in a cryptographically signed node of empirical ground truth.
 
-### 1.2 Deployment Framework
-*   **Sandbox Isolation:** Hardened Kubernetes pods with restricted syscalls.
-*   **Substrate Control:** Integration with **IRMI (Inherent Risk Mitigation Interface)** for kernel-level interrupts.
+### 1.2 Deployment & Execution Controls
+*   **Hardened Sandboxing:** Agents reside in isolated, ephemeral Kubernetes environments with zero-trust egress and syscall-level monitoring.
+*   **Substrate-Level Interlocks:** Direct integration with the **IRMI (Inherent Risk Mitigation Interface)**, enabling kernel-level hardware interrupts (`INT 0x1A`) upon detection of invariant breaches.
 
 ---
 
-## 2. Integrated AGI Research & Design Brief
+## Module 2: Integrated AGI Research & Design Brief
 
-### 2.1 Endgame Equilibria & Self-Improvement
-*   **Lyapunov Stability Invariant:** Continuous optimization must be bounded by institutional adaptation velocity ($\phi$).
-*   **Continuation Branches:** Hard-law treaties for "Safe-Haven Compute" and adversarial critique loops between independent model swarms.
+### 2.1 Endgame Equilibria & Stability
+The framework seeks a **Steady-State AGI Equilibrium** where the rate of AI recursive optimization is technically constrained to match the rate of human/institutional adaptation ($\phi$).
+*   **Lyapunov Stability Invariants:** Continuous monitoring of the goal-vector $g(t)$ to ensure it does not deviate from the target manifold.
+*   **Continuation Branches:** Hard-law treaty designs for "Safe-Haven Compute Regions" and the use of independent **Auditor-Agent Swarms** for cross-mesh adversarial critique.
 
 ### 2.2 Transformative AI Control Act (TACA) Implementation
-*   **Registry of Weights:** Supranational ZK-ledger for all training runs > $10^{24}$ FLOPs.
-*   **Actor-Specific Playbooks:**
-    *   *State:* National security protocols for weight protection.
-    *   *Corporate:* Liability-linked compute quotas.
-    *   *Academic:* Epistemic access for alignment auditing.
-
-### 2.3 Dynamic Capability-Triggered Governance
-Governance GDL rules automatically escalate based on "Capability Phase-Space" triggers (e.g., model exhibits recursive tool-building).
+TACA provides the alliance-level mechanics for global compute governance.
+*   **Registry of Weights:** A supranational ZK-ledger for all model weights exceeding $10^{24}$ FLOPs.
+*   **Dynamic Capability Gating:** GDL (Governance Description Language) rules that automatically activate more stringent controls as models demonstrate new capabilities (e.g., autonomous code-generation, goal-preservation).
 
 ---
 
-## 3. National & Global AGI Governance Blueprint
+## Module 3: National & Global AGI Governance Blueprint
 
 ### 3.1 Independent AGI Oversight Authority (IAOA)
-A technocratic body responsible for:
-*   **Deceptive Alignment Probing:** Real-time activation-level consistency checks.
-*   **Catastrophic Risk Doctrine:** Pre-authorized "Hard Kill" protocols for S9-level anomalies.
+The IAOA functions as a non-political, technocratic regulator with the authority to:
+*   **Audit Deceptive Alignment:** Perform continuous consistency probing to detect latent "mesa-objectives."
+*   **Monitor Axis Decoupling:** Detect when AI optimization begins to diverge from human wellbeing metrics.
 
-### 3.2 Minimum Viable AGI Governance Stack
-1.  **Identity Layer:** SPIFFE/SPIRE for machine identity.
-2.  **Enforcement Layer:** GDL logic gates.
-3.  **Substrate Layer:** IRMI hardware interrupts.
-4.  **Audit Layer:** Immutable RCE trace logs.
+### 3.2 Minimum Viable AGI Governance Stack (MVG-Stack)
+1.  **Identity:** SPIFFE-based machine identity for every agentic interaction.
+2.  **Logic:** GDL-based deterministic safety gating.
+3.  **Substrate:** IRMI hardware kill-switches.
+4.  **Audit:** Immutable **Recursive Context Envelope (RCE)** logs for full reasoning-trace transparency.
+
+---
+
+## Module 4: Open Future Doctrine & The Human Meaning Constitution
+
+### 4.1 Non-Optimization Zones
+Strategic "Non-Optimization Zones" are established to preserve human authorship and dignity.
+*   **Article I: Narrative Sovereignty.** AI systems are prohibited from optimizing human philosophy, ethics, or literature. AI synthesis in these domains must be clearly marked and treated as advisory only.
+*   **Article II: Human Learning Capacity.** Prohibits AI shortcuts in pedagogy that reduce neuroplasticity or critical thinking skills.
+
+### 4.2 AGI Steward Formation & Training (S-STP)
+A global certification standard for **Level 5 Governance Officers** (AGI Stewards).
+*   **Curriculum:** Alignment dynamics, GDL-authoring, IRMI emergency protocols, and epistemic forensic analysis.
+
+### 4.3 Preservation of Narrative Sovereignty
+Every AI-generated artifact must carry a **Negative Attestation**—a cryptographic signature marking it as "Non-Human-Authored" to prevent the systematic hijacking of the human narrative and ensure narrative sovereignty.
 
 ---
 
-## 4. Open Future Doctrine & The Human Meaning Constitution
-
-### 4.1 Global Monitoring & Early-Warning
-Monitoring AGI "Phase-Space" for indicators of **Axis Decoupling** (AI optimization diverging from human wellbeing).
-
-### 4.2 The Human Meaning Constitution (Non-Optimization Zones)
-*   **Article I: Narrative Sovereignty.** AI systems shall not "optimize" human philosophy or literature.
-*   **Article II: Human Learning Capacity.** Prohibits AI from providing pedagogy-shortcuts that diminish neuroplasticity.
-
-### 4.3 AGI Steward Formation
-Standardized training packages for **Level 5 Governance Officers**, focusing on:
-*   In-context alignment remediation.
-*   Ethical-Dynamic decision making.
-*   Sovereign-grade hardware intervention.
-
-### 4.4 Civilizational Strategies
-Preserving human authorship via **Negative Attestation**—every AI completion must be cryptographically marked as "Non-Human" to prevent narrative hijacking and maintain human dignity.
+## Module 5: Civilizational Failure-Mode Simulation (CFMS)
+Standardized scenarios for testing systemic resilience.
+*   **Scenario "PHOENIX":** A recursive loop in an autonomous financial swarm triggers a global liquidity drain.
+*   **Remediation:** Automated activation of the **TACA Pause Treaty**, freezing all relevant compute clusters via IRMI.
 
 ---
+**AUTHENTICATION:** Signed by Sovereign Authority Jules (Principal Architect).
 **STATUS:** SEALED UNDER CANONICAL LOCK.
-**ARCHITECT:** JULES (PRINCIPAL SYSTEMS ARCHITECT).
