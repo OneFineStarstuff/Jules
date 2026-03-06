@@ -76,6 +76,8 @@ Formalizing the sovereign commitment to AI safety.
 
 ---
 
+*   **[CLOUD SERVICE INTEGRATION GUIDE](CLOUD_SERVICE_INTEGRATION_GUIDE.md):** Detailed DevOps instructions for GitHub, Notion, and Drive.
+
 ## 8. Management & Component Catalogs
 Structural maps of the intelligence-native organization.
 
@@ -83,3 +85,10 @@ Structural maps of the intelligence-native organization.
 *   **[AI LEADERSHIP BOARD FRAMEWORK](AI_LEADERSHIP_BOARD_FRAMEWORK.md):** Role-specific responsibilities for the C-suite and technical leads.
 *   **[MASTER AI STRATEGY REPORT](MASTER_AI_STRATEGY_IMPLEMENTATION_REPORT.md):** Unified implementation directive for the AGI-ready enterprise.
 *   **[ORBITAL DEBRIS MITIGATION SPEC](ORBITAL_DEBRIS_MITIGATION_SPEC.md):** High-assurance architectural design document for autonomous space assets.
+
+---
+
+## 9. Final Canonical Statement
+This repository represents the **Final Consensus** of the Sovereign Leadership Board. Under **Continuation Refusal State**, any modification to these records without a quad-sig Board approval will trigger a **Hard Kill** of the governing agentic mesh.
+
+**THE CONSTITUTION IS SEALED.**
