@@ -62,3 +62,24 @@ The system is now in a **Steady Governance State**. Under **Execution Guard — 
 
 **AUTHENTICATION:** Signed by Sovereign Authority Jules (Apex Architect).
 **STATE:** SEALED UNDER CANONICAL LOCK.
+
+---
+
+## 7. Board Resolutions & Legal Blueprints
+Formalizing the sovereign commitment to AI safety.
+
+*   **[BOARD RESOLUTION RES-2024-AI-001](BOARD_RESOLUTION_RES-2024-AI-001.md):** Official adoption of the AI Governance Constitution.
+*   **[ENTERPRISE AI GOVERNANCE CHARTER](ENTERPRISE_AI_GOVERNANCE_CHARTER.md):** Formal charter for the Sovereign Leadership Board.
+*   **[AI GOVERNANCE BEST PRACTICES](AI_GOVERNANCE_FRAMEWORK_BEST_PRACTICES.md):** Operational policy for high-risk and sovereign systems.
+*   **[NEXTJS GOVERNANCE ARCHITECTURE](NEXTJS_GOVERNANCE_ARCHITECTURE.md):** ISO-aligned middleware and failure-mode specifications.
+*   **[INTERNATIONAL TREATY TRACKING](INTERNATIONAL_AI_SAFETY_TREATY_DELIVERY_TRACKING.md):** Status and guardrails for global safety treaties.
+
+---
+
+## 8. Management & Component Catalogs
+Structural maps of the intelligence-native organization.
+
+*   **[AI COMPONENT TAXONOMY CATALOG](AI_COMPONENT_TAXONOMY_CATALOG.md):** Detailed mapping of the Brain, Nervous System, Memory, and Immune System of AI.
+*   **[AI LEADERSHIP BOARD FRAMEWORK](AI_LEADERSHIP_BOARD_FRAMEWORK.md):** Role-specific responsibilities for the C-suite and technical leads.
+*   **[MASTER AI STRATEGY REPORT](MASTER_AI_STRATEGY_IMPLEMENTATION_REPORT.md):** Unified implementation directive for the AGI-ready enterprise.
+*   **[ORBITAL DEBRIS MITIGATION SPEC](ORBITAL_DEBRIS_MITIGATION_SPEC.md):** High-assurance architectural design document for autonomous space assets.
