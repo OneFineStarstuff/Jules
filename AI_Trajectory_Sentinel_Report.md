@@ -100,3 +100,20 @@ Instantiating the **MN-AIGA law** to provide a legal foundation for AI agency.
 
 ---
 *End of Report*
+
+---
+
+## 8. Mathematical Appendix: KPI Scratchpad Calculations
+
+### 8.1 Safety ROI ($ROI_S$)
+$ROI_S = \frac{\Delta \text{TailRiskLoss}}{\text{Cost of Sentinel Deployment}}$
+*   **Baseline Expected Loss (Annual):** $500M (Cyber/Operational risk).
+*   **Post-Sentinel Expected Loss:** $150M.
+*   **Deployment Cost:** $28M.
+*   **Calculation:** $(500 - 150) / 28 = 12.5$ (1250% ROI).
+
+### 8.2 Governance Velocity ($V_G$)
+$V_G = \frac{\text{Rules Enforced}}{\text{Inference Pass Latency (ms)}}$
+*   **Rules:** 120 GDL invariants.
+*   **Latency:** 1.2ms overhead.
+*   **Calculation:** $120 / 1.2 = 100$ Rules/ms.
