@@ -1,44 +1,14 @@
-# Enterprise AI Agent Interoperability Protocol (EAIP)
+<title>Enterprise AI Agent Interoperability Protocol (EAIP): Technical Specification</title>
+<abstract>Technical specification for EAIP, the enterprise standard for secure agent-to-agent communication. It mandates gRPC transport, SPIFFE-based machine identity, and Recursive Context Envelopes (RCE) for reasoning trace integrity.</abstract>
+<content>
+# 1. API Architecture
+* **Transport:** gRPC (HTTP/2) for bidirectional, high-concurrency streaming.
+* **Serialization:** Protobuf (Binary) for minimal overhead.
 
-## 1. API Architecture
-*   **Transport:** gRPC (HTTP/2) for bidirectional, persistent reasoning streams.
-*   **Serialization:** Protobuf (Binary) for minimal latency in high-concurrency meshes.
-*   **Service Definition:**
-    ```protobuf
-    service AgentMesh {
-      rpc Handoff (ContextEnvelope) returns (ContextEnvelope);
-      rpc StreamReasoning (ReasoningNode) returns (stream FeedbackNode);
-    }
-    ```
+# 2. IAM for Agents (SPIFFE/SPIRE)
+* **Identity:** X.509 SVIDs issued per-workload.
+* **Auth:** Mandatory mutual TLS (mTLS) for peer authentication.
 
-## 2. IAM for Agents (SPIFFE/SPIRE)
-*   **Identity:** Agents are assigned unique **SPIFFE IDs** (e.g., `spiffe://acme.com/agent/document-router`).
-*   **Attestation:** SPIRE server performs workload attestation by verifying binary hashes and container metadata before issuing an **X.509 SVID**.
-*   **Auth:** Mutual TLS (mTLS) is mandatory for all agent-to-agent gRPC connections.
-
-## 3. State Management (Recursive Context Envelope)
-The **RCE** ensures trace integrity across distributed agents.
-*   **Trace Context:** W3C Traceparent compliant headers.
-*   **Memory Stack:** Compressed reasoning history using sliding-window summarization.
-*   **Safe Boundary Manifest:** Immutable list of permitted tools and resource constraints (e.g., `MAX_RECURSION=5`).
-
-## 4. Reference Implementation (Node.js)
-```javascript
-const { createAgentClient } = require('@eaip/mesh-sdk');
-
-const agent = createAgentClient({
-  identity: process.env.SPIRE_SVID_PATH,
-  peers: ['legal-agent:50051']
-});
-
-async function triggerHandoff(context) {
-  const response = await agent.handoff(context);
-  console.log('Reasoning trace:', response.memory_stack);
-}
-```
-
-## 5. Security & Isolation: Agent Sandboxing
-To mitigate jailbreak and data exfiltration risks:
-1.  **Kubernetes ResourceQuotas:** Enforce CPU/Memory limits per agent pod.
-2.  **NetworkPolicies:** Restrict egress. Agents can only talk to their assigned Peer ID over port 50051 (gRPC).
-3.  **AppArmor/Seccomp:** Profile system calls to prevent unauthorized filesystem access.
+# 3. State Management (RCE)
+* **Payload:** Every handoff carries an immutable trace ID and a compressed reasoning stack.
+</content>
