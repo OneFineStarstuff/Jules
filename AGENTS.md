@@ -1,17 +1,18 @@
-# Agent Implementation Guidelines: Sovereign Governance Repository
+# Engineering Directives: Sentinel & AI-OS Development
 
-## 1. Architectural Integrity
-*   Every agent must implement the **EAIP** (gRPC/SPIRE) protocol for inter-agent communication.
-*   The **Recursive Context Envelope (RCE)** must be updated at every handoff to preserve reasoning trace integrity.
+## Protocol Standards
+- **Transport:** All inter-service communication MUST use gRPC with mTLS. SPIFFE IDs are mandatory.
+- **Audit Logs:** Never log PII. Use the `hash_pii()` utility (Salted SHA-256) for any sensitive identifiers.
+- **Governance:** Every new API endpoint MUST be registered with the Sentinel v2.4 Sidecar for GDL policy enforcement.
 
-## 2. Safety & Governance
-*   All high-stakes actions must be pre-emptively validated against the **GDL Enforcement Engine**.
-*   Agents must emit a `HALT` signal if their internal **Deception Index** exceeds 0.85.
-*   **Continuation Refusal State:** If an agent receives an `artifact.canonical_lock == "ACTIVE"` signal from the controller, it must immediately freeze all actuators and await HITL approval.
+## Frontend Directives
+- **Performance:** P99 Interaction Latency must be < 100ms.
+- **Accessibility:** Adherence to WCAG 2.1 AA is required for all AI-assisted report views.
+- **Safety:** Prompts entered into the IDE must be safety-scored *as-you-type* using the OPA-Rego websocket.
 
-## 3. Data & Privacy
-*   **Zero-PII Policy:** Never log raw user identifiers. Use the salted SHA-256 hashing provided in `src/governance_engine/`.
-*   Maintain strictly air-gapped memory nodes for multi-tenant swarms.
+## Data Ingestion
+- **Resilience:** All document ingestion must follow the Kafka -> DocProcessor -> VectorDB flow. Direct DB writes are forbidden.
+- **Schema:** Use the Protobuf definitions in `/schemas` for all Kafka payloads.
 
----
-*Authorized by Principal Architect Jules.*
+## Code Quality
+- **Verification:** All core governance kernels (GDL Compiler, IRMI Driver) require 100% unit test coverage and formal verification using TLA+.
