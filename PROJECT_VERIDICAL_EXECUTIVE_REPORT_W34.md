@@ -1,58 +1,90 @@
 # Project Veridical: Weekly Executive Status Report (W34)
-**Date:** 2024-08-22
-**Author:** Principal TPM & AI Solution Architect
-**Distribution:** Executive Steering Committee
+**Date:** August 22, 2024
+**Reporting Period:** Aug 15 – Aug 21, 2024
+**Status:** 🟡 **AMBER (At Risk)**
+**TPM:** Principal AI Program Manager
 
 ---
 
-## 1. Executive Summary & Health
-- **RAG Status:** 🟢 **GREEN** (On track for Q4 wide release)
-- **Schedule:** 72% Complete vs 68% Plan (+4% ahead due to optimized ingestion)
-- **Budget Burn:** $442K Spent / $1.2M Budget (On target; 36.8% utilization)
-- **Health Indicator:** 🟡 **AMBER** on GPU Availability (H100 allocation pending for fine-tuning)
+## 1. Executive Summary
+Project Veridical is currently **Amber (At Risk)**. While technical milestones are 68% complete, we are facing a **15% budget overrun** driven by higher-than-forecasted LLM token intensity (GPT-4 usage) and a **two-week legal delay** on the HR data connector. The primary success metric (Golden Set Evaluation) is currently at **89.4%**, approaching the 90% threshold.
+
+*   **Primary Blocker:** Legal sign-off for HR data connector (2-week delay).
+*   **Financial Health:** $1.15M Actual vs. $1.0M Forecast (+15% Variance).
+
+---
 
 ## 2. Key Performance & Adoption
-- **Uptime:** 99.82% (Target: 99.90%) – *Action: Investigating Vector DB node restart in Frankfurt.*
-- **Daily Active Users (DAU):** 1,240 (HR: 450, Legal: 310, Sales: 480) – Up 18% WoW.
-- **Query Volume:** 8,200/day; P99 Latency: 2.1s (Target: <2.5s).
-- **Accuracy (Golden Set):** 89.4% (Up from 84.1%) – CSAT: 4.2/5.0.
+| Metric | Current Value | Target / Benchmark | Status |
+| :--- | :--- | :--- | :--- |
+| **System Uptime** | 99.82% | 99.90% | 🟡 |
+| **DAU: HR** | 450 | 500 | 🟢 |
+| **DAU: Legal** | 310 | 300 | 🟢 |
+| **DAU: Sales** | 480 | 450 | 🟢 |
+| **Query Volume** | 12,400 / day | 10,000 / day | 🟢 |
+| **Answer Accuracy** | 89.4% | > 90.0% | 🟡 |
+| **CSAT Score** | 4.2 / 5.0 | 4.0 / 5.0 | 🟢 |
+
+---
 
 ## 3. Quality & Financials
-- **Cost per Query:** $0.034 (LLM Tokens: $0.021, Vector DB/Infra: $0.013).
-- **Productivity Gain:** Estimated $220K/month saved in manual document retrieval time.
-- **QA Pass Rate:** 94% on Factuality; 91% on Citation Integrity.
-- **Budget Variance:** -$12K (Under budget due to transitioning small queries to GPT-4o-mini).
+| Metric | Value |
+| :--- | :--- |
+| **Cost per Query** | $0.034 |
+| **Productivity Gain (Est. Monthly)** | $220,000 |
+| **QA Pass Rate** | 94.0% |
+| **Forecast Spend (YTD)** | $1,000,000 |
+| **Actual Spend (YTD)** | $1,150,000 |
+| **Budget Variance (%)** | **+15.0% (Overrun)** |
+| **Variance Calculation** | `($1,150,000 - $1,000,000) / $1,000,000 = 15%` |
+
+---
 
 ## 4. Workstream Status
-- **Ingestion Pipeline (92%):** Completed SharePoint connector; Jira integration in UAT.
-- **Vector Search Tuning (85%):** Hybrid search (Dense + BM25) optimized for German technical terms.
-- **Frontend/Integration (70%):** Teams/Slack bot in Beta; internal web portal UI 90% finalized.
-- **Compliance/Redaction (100%):** PII scrubbing sidecar fully deployed; zero leakage in Audit tests.
+*   **Ingestion Pipeline:** 92% Complete (Blocked on HR connector).
+*   **Vector Search Tuning:** 85% Complete (Optimizing for German technical terms).
+*   **Frontend & Integrations:** 70% Complete (Teams/Slack beta live).
+*   **Compliance & Redaction:** 100% Complete (PII sidecar operational).
 
-## 5. Key Risks & Issues
-- **Risk:** GPU Compute Scarcity (Impact: High). Fine-tuning for DE-dialect stalled.
-  - *Mitigation:* Exploring Azure ND-series reservation vs. serverless inference.
-- **Issue:** Data Connector Permissions (Impact: Medium). Missing read access to legacy "Archive-X".
-  - *Need:* CISO override for read-only service account.
+---
+
+## 5. Critical Risks
+| Risk | Impact (Time/Cost) | Mitigation Strategy | Owner |
+| :--- | :--- | :--- | :--- |
+| **HR Data Legal Block** | 2 Weeks / $100k (Opportunity Cost) | Executive escalation to General Counsel for PII override. | Legal / TPM |
+| **Token Intensity Overrun** | $150k (YTD) | Implement Model Quantization and Context Resizing (See Sec 6). | Architect |
+| **GPU Scarcity** | 3 Weeks Delay | Evaluating serverless inference kernels to bypass H100 wait. | SRE |
+
+---
 
 ## 6. Executive Decisions Required
-- **Decision A:** Approval to move production inference to "Reserved Capacity" (Azure/AWS).
-  - *Recommendation:* Approve. 15% cost reduction over 12 months vs. On-demand.
-- **Decision B:** Expansion to APJ (Singapore) Region.
-  - *Recommendation:* Defer to Q1 2025 until EMEA data sovereignty is audited.
+We must correct the 15% budget overrun by adjusting our RAG architecture.
 
-## 7. Next Week's Priorities
-- **Finalize Jira Data Ingestion:** Deadline Aug 29.
-- **Load Testing (10k DAU):** Required before Legal "Go-Live" on Sept 5.
-- **Security Red-Teaming:** Focused on Prompt Injection/Jailbreaking.
+### Option A: Context Window Resizing & Top-K Reduction
+*   **Technical Implications:** Reduce retrieval chunks from `k=10` to `k=5` and truncate system context.
+*   **Pros:** Immediate 30-40% reduction in token cost; improves latency by ~200ms.
+*   **Cons:** Risk of "Context Loss" leading to a ~1.5% dip in accuracy (dropping us further from the 90% goal).
+*   **Recommendation:** Secondary Option.
 
-## 8. External Dependencies
-- **Microsoft/OpenAI:** API rate limit increase for `gpt-4o` deployment.
-- **Legal Dept:** Final sign-off on "Employee Handbook" RAG data sources.
+### Option B: Model Quantization & Hybrid Model Mix (Sovereign LLM)
+*   **Technical Implications:** Transition 80% of "simple" queries to a quantized 4-bit Llama-3-70B; reserve GPT-4 for "complex" reasoning.
+*   **Pros:** Significant TCO reduction (~45% savings on inference); maintains high accuracy for complex tasks.
+*   **Cons:** Requires 3 days of dev work to implement the "Routing Logic."
+*   **Recommendation:** **APPROVED** - We recommend moving to a hybrid model mix immediately.
 
-## 9. Action Items
-| Owner | Task | Due Date | Trend |
+---
+
+## 7. Next Week’s Deliverables
+1.  **Jira Integration Completion:** Aug 29.
+2.  **Model Router V1 Deployment:** To implement the Model Mix strategy.
+3.  **Load Testing (20k concurrent):** In preparation for Finance rollout.
+
+---
+
+## 8. Action Items
+| Owner | Task | Due Date | Status Trend |
 | :--- | :--- | :--- | :--- |
-| @Architect | Optimize Pinecone Index Sharding | Aug 26 | 🟢 Improving |
-| @CISO | Review "Archive-X" access request | Aug 25 | 🟡 Stable |
-| @TPM | Finalize Q4 Roadmap Presentation | Aug 28 | 🟢 Improving |
+| @Architect | Implement Hybrid Model Router | Aug 26 | 🟢 Improving |
+| @CISO | Review "Archive-X" Data Permissions | Aug 25 | 🟡 Stable |
+| @Legal | Resolve HR Connector PII Audit | Aug 28 | 🔴 Declining |
+| @TPM | Finalize Q4 Budget Realignment | Aug 30 | 🟢 Improving |
