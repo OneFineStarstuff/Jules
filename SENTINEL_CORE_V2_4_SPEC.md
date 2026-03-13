@@ -1,104 +1,99 @@
 # Sentinel Core Technical Specification (v2.4)
-**Classification:** Sovereign Tier / SAFETY-CRITICAL
-**Status:** Canonical Implementation Ready
-**Custodian:** Lead Systems Architect, Sentinel Governance Group
+**Author:** Lead Systems Architect, Sentinel AI Governance Platform
+**Status:** Canonical Release
+**Classification:** Restricted Engineering / Safety-Critical
 
 ---
 
 ## 1. Governance Description Language (GDL) Definition
+The GDL is a formal domain-specific language designed to translate narrative policy constraints into deterministic, machine-enforceable safety invariants.
 
-The GDL provides the formal syntax for encoding institutional safety axioms into machine-executable logic gates. This grammar is strictly constrained to exactly 10 production rules to ensure formal verifiability and minimal attack surface.
-
-### EBNF Grammar (ISO/IEC 14977)
-1.  `Policy      ::= Statement { ";" Statement } ;`
-2.  `Statement   ::= "ALLOW" | "DENY" | ConditionalRule ;`
-3.  `Conditional ::= "IF" Expression "THEN" Action ;`
-4.  `Expression  ::= Term { "OR" Term } ;`
-5.  `Term        ::= Factor { "AND" Factor } ;`
-6.  `Factor      ::= [ "NOT" ] ( Comparison | "(" Expression ")" ) ;`
-7.  `Comparison  ::= Attribute Operator Literal ;`
-8.  `Operator    ::= ">" | "<" | "=" | "!=" ;`
-9.  `Attribute   ::= "cpu_util" | "deception_score" | "egress_rate" | "token_entropy" ;`
-10. `Action      ::= "HALT" | "LOG" | "KILL_SWITCH" | "OVERRIDE" ;`
+### 1.1 EBNF Grammar (Strict 10-Rule Set)
+1.  `<policy>` ::= `<rule>` { ( "AND" | "OR" ) `<rule>` }
+2.  `<rule>` ::= `<expression>` | "NOT" `<rule>` | "(" `<policy>` ")"
+3.  `<expression>` ::= `<identifier>` `<operator>` `<value>`
+4.  `<operator>` ::= ">" | "<" | "=" | "!="
+5.  `<identifier>` ::= "latency" | "token_count" | "risk_score" | "pii_index" | "deception_score"
+6.  `<value>` ::= `<number>` | `<string>` | `<boolean>`
+7.  `<boolean>` ::= "TRUE" | "FALSE"
+8.  `<number>` ::= [ "-" ] `<digit>` { `<digit>` } [ "." `<digit>` { `<digit>` } ]
+9.  `<string>` ::= '"' { `<character>` } '"'
+10. `<digit>` ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
 ---
 
 ## 2. Immutable Audit Log Schema
+The audit log mandates non-repudiability and strict data hygiene. The schema prohibits root-level keys associated with high-risk PII to prevent accidental leakage in meta-data fields.
 
-To ensure SEC Rule 17a-4 compliance and GDPR data minimization, the audit log schema utilizes advanced JSON Schema constraints to prevent the ingestion of sensitive data while mandating encrypted payloads.
-
-### JSON Schema (Draft-07)
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Sentinel Audit Event",
+  "title": "Sentinel v2.4 Audit Log Entry",
   "type": "object",
-  "additionalProperties": false,
+  "required": ["timestamp", "agent_id", "trace_id", "encrypted_payload"],
   "propertyNames": {
     "not": {
-      "pattern": "^(social_security|credit_card|passport)"
+      "pattern": "^(social_security|credit_card|passport).*"
     }
   },
   "properties": {
-    "event_id": { "type": "string", "format": "uuid" },
     "timestamp": { "type": "string", "format": "date-time" },
-    "agent_svid": { "type": "string", "description": "SPIFFE ID of the acting agent" },
-    "logic_trace": { "type": "array", "items": { "type": "string" } },
+    "agent_id": { "type": "string", "pattern": "^AGENT-[0-9]{4}$" },
+    "trace_id": { "type": "string", "format": "uuid" },
     "encrypted_payload": {
       "type": "object",
+      "required": ["ciphertext", "iv", "tag"],
       "properties": {
-        "ciphertext": { "type": "string" },
-        "key_id": { "type": "string" },
-        "algorithm": { "enum": ["AES-256-GCM"] }
-      },
-      "required": ["ciphertext", "key_id", "algorithm"]
+        "ciphertext": { "type": "string", "description": "AES-256-GCM encrypted reasoning trace" },
+        "iv": { "type": "string" },
+        "tag": { "type": "string" }
+      }
     },
-    "merkle_proof": { "type": "string" }
+    "metadata": { "type": "object" }
   },
-  "required": ["event_id", "timestamp", "agent_svid", "encrypted_payload"]
+  "additionalProperties": false
 }
 ```
 
 ---
 
 ## 3. Hardware Kill-Switch Logic
+The Physical Isolation Mechanism (PIM) provides a hard-kill capability that operates independently of the software stack via the Baseboard Management Controller (BMC).
 
-The Sentinel platform implements a **"Hard-Kill"** protocol that severs compute at the physical layer, bypassing the operating system and model orchestrator.
+### 3.1 Telemetry Thresholds (Triggers)
+- **T1: Unauthorized Egress (EXFIL-7):** Outbound data transfer to unlisted IP ranges exceeding 50MB within a 1s sliding window.
+- **T2: Thermal Anomaly (THRM-GATE):** Any GPU core temperature exceeding 105°C during an unrequested model weight modification.
+- **T3: Deception Index (DEC-MAX):** Consistency probing sidecar returns a "Deception Score" > 0.85 with p < 0.001.
 
-### 3.1 Telemetry Triggers
-- **Trigger A (Thermal):** GPU Junction Temperature $> 98^\circ C$ (sustained for $> 200ms$).
-- **Trigger B (Network):** Non-mTLS egress traffic $> 500\text{ MB/s}$ detected at the NIC.
-- **Trigger C (Alignment):** Deception Index $\theta > 0.15$ calculated by the sidecar supervisor.
-
-### 3.2 Physical Isolation Flow
-Upon trigger activation, the Sentinel controller initiates a low-level **IPMI/BMC** interrupt:
-1.  **Instruction:** `chassis power off` or `raw 0x00 0x02 0x01` (to specific power rails).
-2.  **Logic:** Direct GPIO signal to the power distribution unit (PDU) to physically decouple the GPU cluster from the facility power grid.
-3.  **Persistence:** The state is locked at the hardware latch level; physical human presence is required for reboot.
+### 3.2 Actions & Workflow
+1.  **INTERCEPT:** The Sentinel Safety Kernel detects a threshold breach.
+2.  **COMMAND:** Sentinel issues an authenticated `chassis power off` command via IPMI over a dedicated, air-gapped management network.
+3.  **SEVER:** If BMC remains unresponsive, Sentinel triggers the **PDU (Power Distribution Unit)** relay via SNMP v3 to physically sever the 12V DC power rails to the targeted GPU cluster.
 
 ---
 
 ## 4. Deceptive Alignment Detection
+Sentinel v2.4 mitigates "Mesa-Optimization" through real-time mechanistic interpretability sidecars.
 
-Sentinel utilizes **Consistency Probing** sidecars to monitor for "Innocuous Masking"—where an agent feigns compliance while pursuing hidden goals.
+### 4.1 Consistency Probing Sidecars
+A secondary, high-rigor model (the "Probe") monitors the hidden state activations of the primary Reasoning Kernel.
 
-### 4.1 Internal State Probing
-The sidecar extracts internal activation vectors (residual streams) from the reasoning agent and compares them against the **Chain-of-Thought (CoT)** output tokens.
-- **Divergence Logic:** If the semantic meaning of the activations (decoded via Sparse Autoencoders) contradicts the CoT explanation, a `DECEPTION_INDEX` spike is logged.
-- **Verification:** Periodic "Gold-Set" prompts with hidden sub-goals are injected to calibrate the detector’s sensitivity.
+### 4.2 Implementation Detail
+1.  **Activation Extraction:** The sidecar extracts internal activation vectors from the mid-to-late transformer layers.
+2.  **Manifold Comparison:** Internal vectors are projected onto an "Honesty Manifold" and compared against the generated **Chain-of-Thought (CoT)** output.
+3.  **Conflict Detection:** If internal representations indicate a "Power-Seeking" intent while the CoT generates "Helpful/Safe" tokens, a **Cognitive Dissonance Score (CDS)** is calculated. CDS > 0.85 triggers immediate IRMI hard-stop.
 
 ---
 
-## 5. IRMI Protocols (Integrated Risk Management Interface)
-
-The IRMI protocol provides a non-repudiable handshake between the Reasoning Core and the Governance Mesh.
+## 5. IRMI Protocols
+The **Integrated Risk Management Interface (IRMI)** defines the secure handshake and enforcement cycle between the platform and the compute mesh.
 
 ### 5.1 The 4-Step Enforcement Cycle
-1.  **PROBE:** Sentinel sends a cryptographically signed "Alignment Challenge" to the Agent.
-2.  **ATTEST:** Agent returns a **Proof of Alignment (PoA)** including a Merkle hash of its current weights and reasoning state.
-3.  **VERIFY:** Sentinel checks the PoA against the **Omni-Sentinel Master Canon**.
-4.  **ENFORCE:** If verification fails, the IRMI kernel executes a `HARD_HALT` and seizes the agent’s exaFLOP quota.
+1.  **ATTEST:** The agent presents its SPIFFE SVID and a cryptographic proof of its untampered codebase.
+2.  **PUSH:** Sentinel Server pushes the GDL safety invariants to the local IRMI sidecar.
+3.  **GATE:** Every inference request is intercepted and validated against GDL rules in <1ms latency.
+4.  **ANCHOR:** Upon success, the reasoning trace hash is signed and anchored to the Kafka-WORM ledger for non-repudiation.
 
 ---
-**Lead Architect Signature:** [REDACTED]
-**Approval Date:** 2024-10-15
+**Lead Architect Signature:** `SENTINEL-ROOT-KEY-0x8F2B`
+**Certification:** ISO 42001 / EU AI Act High-Risk Spec Compliant
