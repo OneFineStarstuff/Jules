@@ -4,39 +4,39 @@
 ---
 
 ## 1. Executive Summary
-The proposed "PharmaGuard" system is highly actionable and strategically aligned with the **EU AI Act (High-Risk Category)** and **ANSM (French National Agency for the Safety of Medicines and Health Products)** transparency mandates. The project is technically feasible using **Sovereign RAG (Retrieval-Augmented Generation)** architectures hosted on SecNumCloud-certified infrastructure in the FR-Paris region. This implementation addresses the high-velocity compliance overhead in the French pharmaceutical sector while ensuring absolute data residency and GDPR compliance.
+The proposed "PharmaGuard" system is a highly actionable and strategically aligned business use case. It addresses a high-velocity compliance bottleneck in the pharmaceutical sector—namely, the review of promotional materials against the rigorous standards of the **French National Agency for the Safety of Medicines and Health Products (ANSM)**. The project is technically feasible using **Sovereign RAG (Retrieval-Augmented Generation)** architectures and fulfills the "Data Sovereignty" requirement by mandating local French compute residency. From a regulatory perspective, this system qualifies as a "High-Risk" AI application under the **EU AI Act** (Annex III) due to its role in health-related decision support and information dissemination.
 
 ---
 
 ## 2. Risk & Compliance Matrix
 
-| Risk Vector | NIST RMF Function | ISO 42001 Control | Compliance Clause | Mitigation |
+| Risk Vector | ISO 42001 Control | NIST AI RMF Function | Regulatory Clause | Mitigation Strategy |
 | :--- | :--- | :--- | :--- | :--- |
-| **Data Residency** | GOVERN-1.2 | A.8.4 (Sovereignty) | GDPR Art. 3; BDSG/BDSG-equivalent | Deployment on local French CSP (OVHcloud/Orange) with FR-only routing. |
-| **Regulatory Drift** | MEASURE-2.1 | A.10.2 (Monitoring) | ANSM Public Health Code | Weekly ingestion of ANSM circulars into the Vector Store. |
-| **Opaque Reasoning** | MANAGE-4.3 | A.8.2 (Transparency) | EU AI Act Art. 13 | Mandatory citation of the specific ANSM article for every rejection. |
-| **Bias in Review** | MAP-3.1 | A.9.1 (Assessment) | Ethical Guidelines | Counter-factual testing on diverse marketing personas (Pediatric/Geriatric). |
+| **Data Residency** | A.8.4 (Sovereignty) | GOVERN-1.2 | GDPR Art. 3; BDSG/BDSG-equiv | Deployment on SecNumCloud-certified nodes in FR-Paris region. |
+| **Regulatory Drift** | A.10.2 (Monitoring) | MEASURE-2.1 | ANSM Public Health Code | Weekly automated ingestion of ANSM circulars into the localized Vector Store. |
+| **Algorithmic Bias** | A.9.1 (Assessment) | MAP-3.1 | EU AI Act Art. 10 | Adversarial testing against diverse demographic promotional personas (Pediatric vs. Geriatric). |
+| **Opaque Reasoning** | A.8.2 (Transparency) | MANAGE-4.3 | EU AI Act Art. 13 | Mandatory citation of specific ANSM articles for every rejection or modification suggestion. |
 
 ---
 
 ## 3. Governance RACI Matrix
 
-| Role | Business Owner (Marketing) | Compliance Officer (ANSM Expert) | Data Scientist | Data Protection Officer (DPO) |
+| Role | Business Owner (Marketing) | Compliance Officer (ANSM Expert) | Lead Data Scientist | Data Protection Officer (DPO) |
 | :--- | :---: | :---: | :---: | :---: |
 | **Policy Definition** | C | A | I | R |
-| **Model Gating/OPA** | I | R | R | C |
+| **Model Gating (OPA)** | I | R | R | C |
 | **System Instruction (RAG)** | C | A | R | I |
-| **DPIA Approval** | I | I | I | A |
+| **Audit Log Verification** | I | I | I | A |
 
 *R=Responsible, A=Accountable, C=Consulted, I=Informed*
 
 ---
 
 ## 4. Technical Requirements
-- **Compute:** Localized H100/A100 clusters in FR-Paris. No cross-border inference (e.g., Azure West US).
-- **Latency:** < 1.5s for initial screening; < 10s for deep regulatory analysis.
-- **Privacy Sidecar:** Stateless PII redaction (removing patient names/doctor IDs) before inference.
-- **Sovereignty:** **SecNumCloud** (ANSSI) certification for the hosting layer.
+- **Compute Residency:** 100% of inference and data-at-rest must reside within French jurisdiction (e.g., OVHcloud or Orange Business). Use of US-based hyperscalers (even in FR regions) is restricted due to the CLOUD Act.
+- **Latency:** P99 inference latency must be $< 2,500$ms to maintain marketing agility.
+- **Data Sovereignty:** Mandatory use of a **Privacy Sidecar** (e.g., Cognito) to perform stateless PII scrubbing before prompts reach the LLM kernel.
+- **Inference Specs:** Quantized models (e.g., Mistral-Large-2) fine-tuned on French medical law text.
 
 ---
 
@@ -45,30 +45,30 @@ The proposed "PharmaGuard" system is highly actionable and strategically aligned
 ```mermaid
 sequenceDiagram
     participant Mkt as Marketing User (FR)
-    participant GW as API Gateway (FR)
+    participant GW as API Gateway (mTLS)
     participant Redact as PII Redactor (Stateless)
     participant LLM as Sovereign LLM (FR-Paris)
     participant Vector as ANSM Vector DB (RAG)
     participant Audit as Immutable Audit Log (Kafka)
 
     Mkt->>GW: Upload Promotional Material (PDF/IMG)
-    GW->>Redact: Strip PII
-    Redact->>Vector: Retrieve Relevant ANSM Articles
+    GW->>Redact: Strip PII / MNPI
+    Redact->>Vector: Query Relevant ANSM articles
     Vector-->>LLM: Context: {Article L.5122-1, R.5122-2}
-    LLM->>LLM: Compare Material vs. Context
-    LLM->>Audit: Record Reasoning Trace
+    LLM->>LLM: Compare Material vs. Regulatory Context
+    LLM->>Audit: Record Reasoning Trace (WORM)
     LLM-->>GW: Result: {Status: REJECT, Reason: Violation of Art. R.5122-8}
-    GW-->>Mkt: Compliance Report
+    GW-->>Mkt: Compliance Report with Citations
 ```
 
 ---
 
 ## 6. Implementation Artifacts
-1.  **DPIA (Data Protection Impact Assessment):** Focusing on French-specific GDPR interpretations.
-2.  **Model Card (v1.0):** Detailing the "Regulatory Density" of the training/fine-tuning set.
-3.  **System Constitution:** Immutable instructions preventing the AI from generating medicinal advice.
-4.  **ANSM Knowledge Base:** Curated, versioned repository of French pharmaceutical law.
+1.  **DPIA (Data Protection Impact Assessment):** Specific to French pharmaceutical data handling.
+2.  **Model Card (v1.0):** Documenting "Regulatory Density" and bias benchmarks.
+3.  **System Constitution:** Immutable prompt instructions enforcing French medical ethics codes.
+4.  **Audit Ledger Index:** Merkle-anchored logs of all compliance decisions for Ministry of Health audits.
 
 ---
-**Lead Architect:** [REDACTED]
 **Status:** PATH A - ACTIONABLE
+**Lead Architect Signature:** [REDACTED]
