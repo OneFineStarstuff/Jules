@@ -1,0 +1,7 @@
+<report>
+<title>Institutional AGI/ASI and AI Governance: The G-SIFI Master Reference and Technical Specification (2026–2030)</title>
+<abstract>This blueprint defines the definitive technical and strategic framework for Global Systemically Important Financial Institutions (G-SIFIs) to manage the transition to Artificial General Intelligence (AGI). It harmonizes established prudential mandates (Basel III, SR 11-7) with modern AI regulations (EU AI Act, NIST AI RMF) through a defense-in-depth reference architecture. Key implementations include Kafka ACL governance, sidecar-based OPA policy enforcement, WORM-locked evidence storage, and automated auditor swarms. The report establishes the "G-Series" global governance pillars and frontier safety protocols (Cognitive Resonance) required for regulator-ready institutional stability in the autonomous intelligence era.</abstract>
+<content><![CDATA[
+$(cat GSIFI_AGI_ASI_GOVERNANCE_MASTER_REFERENCE.md)
+]]></content>
+</report>

@@ -1,0 +1,85 @@
+<report>
+  <title>Enterprise AI Agent Interoperability Protocol (EAIP) v1.0 Technical Specification</title>
+  <abstract>
+    This specification establishes the technical foundation for autonomous agent-to-agent (A2A) communication in secure enterprise environments. It mandates gRPC over HTTP/2 for transport efficiency, SPIFFE/SPIRE for decentralized machine-identity attestation, and the Recursive Context Envelope (RCE) for distributed state propagation. The protocol provides a robust, highly technical framework for semantic interoperability, cryptographic non-repudiation, and scalable orchestration for heterogeneous agentic workloads.
+  </abstract>
+  <content><![CDATA[
+# Enterprise AI Agent Interoperability Protocol (EAIP) v1.0
+
+## 1. Necessity of Standardization
+
+The proliferation of autonomous agentic workloads within enterprise environments has introduced a significant architectural challenge: **Agentic Entropy**. Current interactions are largely bespoke, relying on brittle JSON-over-HTTP patterns or proprietary orchestration layers. This lack of standardization creates critical bottlenecks:
+
+- **Integration Scalability**: In a multi-agent ecosystem, integrating $N$ agents from different providers leads to $O(N^2)$ complexity. EAIP provides a uniform interface, reducing this to $O(N)$.
+- **Context Fragmentation**: Without a standard for state handoffs, intermediate reasoning steps are lost, leading to "Agent Hallucination Cascades" where downstream agents make decisions based on incomplete or corrupted context.
+- **Security & Non-Repudiation**: For autonomous agents to perform high-value tasks (e.g., executing financial trades or modifying production infrastructure), every action must be traceable to a cryptographically verified workload identity. Bespoke protocols lack the rigor for enterprise-grade non-repudiation.
+
+## 2. API Architecture
+
+Agentic workflows require high-concurrency, low-latency, and bidirectional streaming for long-running reasoning tasks and interactive tool-calling.
+
+### 2.1 Comparative Analysis
+| Feature | REST (OpenAPI/JSON) | WebSockets | gRPC (HTTP/2 + Protobuf) |
+| :--- | :--- | :--- | :--- |
+| **Serialization** | Text (JSON) | Variable | Binary (Protocol Buffers) |
+| **Contract Type** | Loose / Runtime | Implicit / Loose | Strict / Compile-time (IDL) |
+| **Multiplexing** | No (HOL Blocking) | Native Support | Native Support |
+| **Streaming** | Unidirectional Only | Full Duplex | Full Duplex / Bidirectional |
+| **Efficiency** | Low (Header Bloat) | Medium | High (Sub-millisecond) |
+
+### 2.2 Recommendation: gRPC
+**EAIP strictly mandates gRPC over HTTP/2 as the primary transport layer.**
+The rationale is rooted in the requirement for **strict interface contracts** and **sub-millisecond serialization**. Protocol Buffers provide a 60-80% reduction in payload size compared to JSON. HTTP/2's multiplexing allows multiple concurrent "thought streams" and tool-calling flows to persist over a single TCP connection, eliminating the handshake latency inherent in RESTful patterns.
+
+## 3. IAM for Autonomous Agents: SPIFFE/SPIRE
+
+Standard OAuth2/OIDC flows are optimized for human-to-machine interactions. For autonomous agents operating at machine speed, EAIP leverages the **Secure Production Identity Framework for Everyone (SPIFFE)**.
+
+- **Workload Identity (SPIFFE ID)**: Each agent instance is assigned a unique, cryptographically verifiable identity following a hierarchical namespace: `spiffe://trust.domain/agents/{dept}/{class}/{id}`.
+- **Attestation**: The SPIRE agent on the node performs workload attestation, verifying the agent's binary hash and environment before issuing an X.509 **SPIFFE Verifiable Identity Document (SVID)**.
+- **mTLS Enforcement**: All EAIP communication occurs over Mutual TLS (mTLS). SVIDs provide both the identity and the cryptographic basis for encryption. SPIRE handles sub-hour certificate rotation, minimizing the blast radius of potential credential compromise.
+
+## 4. State & Error Management
+
+EAIP introduces the **Recursive Context Envelope (RCE)** for state management and context handoffs.
+
+### 4.1 Recursive Context Envelope (RCE)
+The RCE is a standardized metadata header injected into every EAIP call. It contains:
+- **Trace Context**: W3C Trace Context compatible (TraceID/SpanID) for distributed observability.
+- **State Vector Hash**: A cryptographic fingerprint (Merkle Root) of the parent agent's internal state, allowing the executor to verify context integrity.
+- **Capability Manifest**: A signed list of tools the dispatcher permits the executor to invoke, preventing privilege escalation during delegation.
+- **Recursion Guard**: An integer cap to prevent infinite delegation loops in autonomous swarms.
+
+### 4.2 Error Management
+EAIP defines standardized error mappings to trigger deterministic fallback behaviors:
+- `ERROR_AGENT_DIVERGENCE` (gRPC `FAILED_PRECONDITION`): The executor's plan violates the dispatcher's safety constraints.
+- `ERROR_CONTEXT_OVERFLOW` (gRPC `RESOURCE_EXHAUSTED`): The context size has exceeded the executor's token limit.
+- `ERROR_HITL_REQUIRED` (gRPC `UNAVAILABLE`): A logical deadlock has occurred requiring human intervention.
+
+## 5. Reference Architecture Diagram
+
+The following diagram illustrates a standardized task handoff between a Dispatcher Agent and an Executor Agent utilizing EAIP.
+
+```mermaid
+sequenceDiagram
+    participant D as Dispatcher Agent
+    participant S as SPIRE Authority
+    participant E as Executor Agent
+    participant P as Policy Engine (OPA)
+
+    Note over D,E: EAIP mTLS Handshake
+    D->>S: Fetch SVID (X.509)
+    S-->>D: SVID Issued
+    D->>E: gRPC ExecuteTask(RCE + Payload)
+    E->>S: Validate Dispatcher SVID
+    S-->>E: Identity Verified
+    E->>P: Check Authorization (RCE Scope)
+    P-->>E: Policy Permit (Max Budget: $100)
+    rect rgb(20, 20, 20)
+    Note right of E: Autonomous Reasoning Loop
+    E->>E: Process Request
+    end
+    E-->>D: TaskResult (Updated RCE)
+```
+  ]]></content>
+</report>
