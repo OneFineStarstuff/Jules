@@ -1,0 +1,72 @@
+<report>
+<title>90-Day Execution Pack: Governance-as-Code (GaC) & CI/CD Compliance Pipelines</title>
+<abstract>This report establishes the technical framework for 'Governance-as-Code' (GaC). It specifies the integration of GitHub Actions-based compliance gates, PR annotations, OPA/Rego policy enforcement, and JSON schemas for control mapping to ensure regulator-defensible audit trails for AGI workloads.</abstract>
+<content><![CDATA[
+# 1. Governance-as-Code (GaC) Integration
+
+## 1.1 GitHub Actions Compliance Gates
+Compliance is shifted-left directly into the developer workflow. Every PR triggering an AGI-related change must pass the **Sentinel Compliance Gate**.
+
+### GitHub Actions Workflow Fragment
+```yaml
+name: AGI Governance Verification
+on: [pull_request]
+jobs:
+  governance-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Run Sentinel Verify
+        run: sentinel verify --policy policies/eu-ai-act.rego --data src/model_config.json
+      - name: Annotate PR
+        if: failure()
+        uses: sentinel/pr-annotator@v1
+        with:
+          message: "EU AI Act Violation: Annex IV (Technical Documentation) missing for High-Risk system."
+```
+
+---
+
+# 2. OPA/Rego Policy Framework
+
+## 2.1 EU AI Act Policy Integration
+Policies are codified in **Rego** to enable deterministic, machine-readable enforcement.
+- **Redline Check**: Deny deployment if training FLOPs > $10^{26}$ without explicit Board (SVD-0) approval.
+- **PII Protection**: Ensure all RAG retrievers include the `PIIScrubbing` middleware.
+
+### Example: Rego Policy Snippet
+```rego
+package sentinel.agi.safety
+
+default allow = false
+
+# Deny if reasoning depth > 10 steps (Recursive Protection)
+deny[msg] {
+    input.reasoning_depth > 10
+    msg = "Recursive Depth Limit Exceeded (SEV-1)"
+}
+
+# Allow if mTLS and SPIFFE ID present
+allow {
+    input.transport == "gRPC"
+    input.identity.type == "spiffe"
+    not deny
+}
+```
+
+---
+
+# 3. Control Mapping & JSON Schemas
+
+## 3.1 Control Mapping Pack (CMP)
+The CMP provides a one-to-one mapping between technical logs and regulatory requirements.
+- **GDPR Mapping**: `event.user_id` -> `data_privacy_control_01`.
+- **ISO 42001 Mapping**: `audit.model_hash` -> `Control A.7.2 (Lifecycle)`.
+
+## 3.2 Predictive Compliance Risk Modeling
+Sentinel v2.4 includes a "Risk Forecaster" that analyzes PR trends to predict future compliance breaches.
+- **Trend Reporting**: Dashboards visualizing "Alignment Velocity" and "Policy Drift" over the 90-day rollout.
+- **PR Annotations**: Proactive warnings on PRs that introduce "Reasoning Latency" or "Context Fragmentation."
+]]></content>
+</report>
