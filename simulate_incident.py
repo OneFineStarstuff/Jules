@@ -6,6 +6,7 @@ Omni-Sentinel Compliance Simulation Loop: Incident T2 under PACIFIC_SHIELD
 
 def run_simulation():
     # 1. Initialize with Master Canon
+    """Runs the simulation for the PACIFIC_SHIELD protocol."""
     master_canon = {
         "latency_h": {"threshold": 150, "operator": "<", "action": "HALT"},
         "drift": {"threshold": 0.05, "operator": "<", "action": "PAUSE"}
