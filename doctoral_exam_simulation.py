@@ -6,6 +6,14 @@ Probes candidate's understanding of LV-Invariants and Sovereign Gating.
 """
 
 def oral_exam():
+    """Conducts a doctoral oral examination for AGI stewardship.
+    
+    This function simulates a doctoral oral examination by presenting a series of
+    predefined questions  related to AGI stewardship. It evaluates the candidate's
+    responses against expected answers,  providing feedback on their performance.
+    The final score is calculated based on the number of  accepted responses, and a
+    certification result is displayed at the end of the examination.
+    """
     print("\n" + "="*60)
     print(" DOCTORAL ORAL EXAMINATION: SOVEREIGN AGI STEWARDSHIP")
     print(" Candidate Assessment Level: L5 Sovereign")

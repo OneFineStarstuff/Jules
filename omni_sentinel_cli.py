@@ -18,9 +18,7 @@ class OmniSentinel:
         self.log = []
 
     def evaluate_telemetry(self, metric, value):
-        """
-        Conflict-resolution priorities: KILL_SWITCH > HALT > OVERRIDE.
-        """
+        """Evaluate telemetry data and determine the appropriate action."""
         action = "MONITOR"
         for threshold, rule_action in self.rules.get(metric, {}).items():
             if self._check_threshold(value, threshold):
@@ -31,6 +29,7 @@ class OmniSentinel:
         return action
 
     def _check_threshold(self, value, threshold):
+        """Check if the value meets the specified threshold condition."""
         if ">" in threshold:
             return float(value.replace('%', '').replace('ms', '')) > float(threshold.replace('>', '').replace('%', '').replace('ms', ''))
         if "<" in threshold:
@@ -39,6 +38,7 @@ class OmniSentinel:
         return False
 
     def _enforce(self, action, metric, value):
+        """Logs an action with a timestamp and updates the system state."""
         timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         entry = {
             "timestamp": timestamp,
@@ -59,6 +59,7 @@ class OmniSentinel:
             print(f"[TELEMETRY] {metric}: {value} | {'█' * blocks}")
 
     def get_state_report(self):
+        """Returns a report of the current system state."""
         return {
             "system_state": self.state,
             "log_entries": len(self.log),
