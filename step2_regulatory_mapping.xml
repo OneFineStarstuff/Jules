@@ -1,0 +1,52 @@
+<report>
+<title>Regulatory & Compliance Framework: Mapping Global Standards to the Enterprise AI Stack</title>
+<abstract>This report provides a granular mapping of the EU AI Act, NIS2, NIST AI RMF, and ISO/IEC 42001 to the enterprise AI stack. It details specific technical controls for RAG provenance, autonomous agent risk management, and zero-trust data protection to ensure regulator-defensible compliance for Fortune 500 and G-SIFI organizations.</abstract>
+<content><![CDATA[
+# 1. Regulatory Mapping Matrix (2026–2030)
+
+## 1.1 EU AI Act Enforcement (High-Risk & GPAI)
+The enterprise stack must automate conformity assessments for systems crossing the $10^{26}$ FLOP threshold or classified as High-Risk (Annex III).
+- **Article 11 (Technical Documentation)**: Handled by the **Immune System** (Sentinel v2.4). Automated generation of Annex IV dossiers from Kafka-streamed telemetry.
+- **Article 14 (Human Oversight)**: Enforced at the **Experience Layer**. Mandatory "Stop-Work" UI gates for A-HITL verification.
+- **Article 15 (Accuracy, Robustness, Cybersecurity)**: Verified in the **Foundation Layer** via HardwareEnclaveAttestor and adversarial red-teaming in CI/CD.
+
+## 1.2 NIS2 & NIST AI RMF Integration
+- **NIS2 Compliance**: mTLS-secured gRPC communication (EAIP) ensures supply chain security and encrypted reasoning paths.
+- **NIST AI RMF 2.0**: Operationalized via the **Immune System**. "Map, Measure, Manage" functions are visualized in the CAIO dashboard using OPA-Rego scores.
+
+---
+
+# 2. RAG Provenance & Hardening Controls
+
+## 2.1 Context Provenance (Memory Layer)
+For RAG systems, provenance is critical for fiduciary and regulatory defensibility (GDPR/FCRA).
+- **Provenance Chains**: Every retrieved fragment is tagged with a cryptographic hash in the **Recursive Context Envelope (RCE)**.
+- **Zero-Trust Retrieval**: PII-redaction middleware intercepts the retrieval path, scrubbing data before the **Brain Layer** processes the context.
+
+## 2.2 Hardening the Memory Layer
+- **Prompt Injection Mitigation**: Semantic filtering at the **Nervous System** layer detects malicious intent in inbound reasoning streams.
+- **Vector DB RBAC**: Granular access control at the embedding level, integrated with AWS IAM/Azure AD.
+
+---
+
+# 3. Autonomous Agent Risk Management
+
+## 3.1 Agentic Homeostasis & Alignment
+Autonomous agents are managed via a "Tiered Constraint" model:
+- **Tier 1 (Critical)**: Agents with transaction authority (e.g., AGI-TRADER). Mandatory air-gapped execution and real-time mechanistic interpretability.
+- **Tier 2 (Standard)**: Corporate agents (e.g., HR/Marketing). OPA-based policy enforcement and 24-hour log review.
+
+## 3.2 Escalation & Tripwires
+- **Semantic Tripwires**: If an agent attempts to access restricted namespaces (e.g., `/secrets/vault`), the **Immune System** triggers a SEV-1 pause.
+- **Recursive Resource Guard**: Integer TTLs in EAIP headers prevent infinite reasoning loops and computational denial-of-service.
+
+---
+
+# 4. ISO/IEC 42001 AIMS Implementation
+
+## 4.1 Continuous Compliance Engine (CCE)
+The CCE (Python Serverless) asynchronously audits the **Immune System** logs against the ISO 42001 control matrix.
+- **Control A.7.2 (AI System Lifecycle)**: Automated capture of model versioning, training data hashes, and alignment scores.
+- **Control A.9.1 (Impact Assessment)**: Real-time bias monitoring at the **Experience Layer**, triggering Jira tickets for remediation if delta exceeds +/- 5%.
+]]></content>
+</report>

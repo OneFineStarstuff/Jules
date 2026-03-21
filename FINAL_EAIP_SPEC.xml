@@ -1,0 +1,9 @@
+<report>
+  <title>Enterprise AI Agent Interoperability Protocol (EAIP) v1.0 Technical Specification</title>
+  <abstract>This specification establishes a robust, highly technical framework for autonomous agent-to-agent (A2A) communication within enterprise environments. By mandating gRPC for transport efficiency, SPIFFE/SPIRE for decentralized machine identity, and the Recursive Context Envelope (RCE) for state management, the EAIP protocol ensures semantic interoperability, cryptographic non-repudiation, and scalable orchestration for heterogeneous agentic workloads.</abstract>
+  <content>
+    <![CDATA[
+$(cat FINAL_EAIP_CONTENT.md)
+    ]]>
+  </content>
+</report>

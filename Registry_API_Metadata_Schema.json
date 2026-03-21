@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "International AI Governance Registry (IAGR) Metadata",
+  "description": "Jurisdiction-neutral schema for model registration and safety telemetry.",
+  "type": "object",
+  "required": [
+    "registration_id",
+    "provider_entity",
+    "capability_class",
+    "accreditation_status",
+    "last_safety_audit_timestamp"
+  ],
+  "properties": {
+    "registration_id": { "type": "string", "pattern": "^IAGR-[0-9]{10}$" },
+    "provider_entity": { "type": "string" },
+    "capability_class": {
+      "enum": ["S1-Narrow", "S3-Deep", "S5-Agentic", "S7-AGI-Ready", "S9-ASI-Candidate"]
+    },
+    "accreditation_status": {
+      "enum": ["Provisional", "Full", "Suspended", "Revoked"]
+    },
+    "provisional_expiry": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Must not exceed 12 months from issuance."
+    },
+    "incident_report_latency_threshold": {
+      "type": "integer",
+      "default": 72,
+      "description": "Default maximum hours for reporting (non-negotiable)."
+    },
+    "hardware_kill_switch_protocol": { "type": "string", "const": "IRMI-INT-0x1A" }
+  }
+}

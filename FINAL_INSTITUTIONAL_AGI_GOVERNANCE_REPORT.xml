@@ -1,0 +1,7 @@
+<report>
+<title>Institutional AGI/ASI and AI Governance: The Master Reference for Global Financial Systems (2026–2030)</title>
+<abstract>This master reference establishes the definitive technical and strategic framework for Fortune 500, Global 2000, and Global Systemically Important Financial Institutions (G-SIFIs) to manage the transition to Artificial General Intelligence (AGI). It harmonizes complex regulatory mandates—including the EU AI Act, Basel III, and SR 11-7—through a high-assurance reference architecture. Key technical pillars include Kafka ACL governance, sidecar-based OPA policy-as-code enforcement, and WORM-locked evidence storage. The report provides a 5-year implementation roadmap, risk analysis, and regulator-ready templates for the safe deployment of autonomous agent swarms in the global financial infrastructure.</abstract>
+<content><![CDATA[
+$(cat INSTITUTIONAL_AGI_GOVERNANCE_MASTER.md)
+]]></content>
+</report>

@@ -1,0 +1,7 @@
+<report>
+<title>AGI/ASI and AI Governance Master Reference (2026–2030): Institutional Architectures for High-Assurance Financial Systems</title>
+<abstract>This report provides a technically precise, institutional-grade governance framework for Artificial General Intelligence (AGI) within Fortune 500 and Global Systemically Important Financial Institutions (G-SIFIs). It harmonizes global regulatory mandates—including the EU AI Act, NIST AI RMF, Basel III, and SR 11-7—into a unified "Trust Stack" utilizing Sentinel v2.4, machine-identity attestation (SPIFFE/SPIRE), and policy-as-code enforcement. The blueprint details frontier safety strategies such as cognitive resonance checks and crisis simulations, proposes the "G-Series" global governance pillars, and provides a 90-day rollout strategy with machine-readable implementation artifacts for 2026–2030 deployment.</abstract>
+<content><![CDATA[
+$(cat GSIFI_AGI_GOVERNANCE_BLUEPRINT.md)
+]]></content>
+</report>
